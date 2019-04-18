@@ -4,7 +4,7 @@
 *  Data            :   2019.04.17
 *  Language        :   SystemVerilog
 *  Description     :   This is testbench for register with parameters
-*  Copyright(c)    :   2018 - 2019 Vlasov D.V.
+*  Copyright(c)    :   2019 Vlasov D.V.
 */
 
 module param_reg_tb_sv();
@@ -14,7 +14,7 @@ module param_reg_tb_sv();
 
     localparam      W = 8,          // bus width
                     T = 10,         // Clock period in ns
-                    Rst_delay = 7,  // reset delay
+                    rst_delay = 7,  // reset delay
                     repeat_n = 10;  // number of repeats 
 
     // clock and reset
@@ -43,7 +43,7 @@ module param_reg_tb_sv();
     
     initial
     begin
-        repeat(Rst_delay) @(posedge clk);
+        repeat(rst_delay) @(posedge clk);
         resetn = '1;
     end
 

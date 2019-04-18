@@ -4,7 +4,7 @@
 *  Data            :   2019.04.17
 *  Language        :   SystemVerilog
 *  Description     :   This is top level for register with parameter
-*  Copyright(c)    :   2018 - 2019 Vlasov D.V.
+*  Copyright(c)    :   2019 Vlasov D.V.
 */
 
 module top_param_reg_sv

@@ -11,4 +11,11 @@ For loading project with git program:
 Or download project from GitHub site <a href="https://github.com/Dmitriy0111/HDL_comparing">HDL_comparing</a>
 
 ## Examples:
-    00_param_reg (sv,v,VHDL) - Consist register with width parameter input/output data bus
+| Example name          | Language      | Description                                                                                       |
+| --------------------- | ------------- | ------------------------------------------------------------------------------------------------- |
+| 00_simple_connect     | (SV,V,VHDL)   | - Consist simple connect input bus to output bus                                                  |
+| 01_small_comb_logic   | (SV,V,VHDL)   | - Consist simple connect input bus to output bus with combination logic (or, and, xor, not, sum)  |
+| 0x_param_reg          | (SV,V,VHDL)   | - Consist register with width parameter input/output data bus                                     |
+
+SV - SystemVerilog
+V - Verilog

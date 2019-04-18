@@ -4,7 +4,7 @@
 -- Data            :   2019.04.17
 -- Language        :   VHDL
 -- Description     :   This is register with parameters
--- Copyright(c)    :   2018 - 2019 Vlasov D.V.
+-- Copyright(c)    :   2019 Vlasov D.V.
 --
 
 library ieee;

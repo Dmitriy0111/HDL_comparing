@@ -25,7 +25,7 @@ TB_DIR   = $(PWD)/tb
 BOARDS_SUPPORTED ?= de0_nano
 BOARD            ?= de0_nano
 
-EXAMPLE_NAME	= 00_param_reg
+EXAMPLE_NAME	?= 00_param_reg
 
 ########################################################
 # common make targets
@@ -79,6 +79,12 @@ sim_dir: sim_clean
 
 sim_cmd_v: sim_dir
 	make -C $(PWD)/$(EXAMPLE_NAME)/ sim_cmd_verilog
+
+sim_cmd_sv: sim_dir
+	make -C $(PWD)/$(EXAMPLE_NAME)/ sim_cmd_systemverilog
+
+sim_cmd_vhdl: sim_dir
+	make -C $(PWD)/$(EXAMPLE_NAME)/ sim_cmd_vhdl
 
 sim_gui_v: sim_dir
 	make -C $(PWD)/$(EXAMPLE_NAME)/ sim_gui_verilog

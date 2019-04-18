@@ -4,7 +4,7 @@
 *  Data            :   2019.04.17
 *  Language        :   SystemVerilog
 *  Description     :   This is register with parameters
-*  Copyright(c)    :   2018 - 2019 Vlasov D.V.
+*  Copyright(c)    :   2019 Vlasov D.V.
 */
 
 module param_reg_sv
