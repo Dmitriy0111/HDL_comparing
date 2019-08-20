@@ -26,24 +26,42 @@ architecture testbench of param_reg_tb_vhd is
     signal   clk        : std_logic := '0';                 -- clock
     signal   resetn     : std_logic := '0';                 -- reset
     -- data signals
-    signal   d_in       : std_logic_vector( W-1 downto 0);  -- data input
-    signal   d_out      : std_logic_vector( W-1 downto 0);  -- data output
+    signal   d_in       : std_logic_vector(W-1 downto 0);   -- data input
+    signal   d_out      : std_logic_vector(W-1 downto 0);   -- data output
     -- simulation variables
     signal   rst_c      : integer   := 0;
     signal   rep_c      : integer   := 0;
+
+    component param_reg_vhd is
+        generic
+        (
+            W       : integer := 8
+        );
+        port 
+        (
+            -- clock and reset
+            clk     : in    std_logic;                          -- clock
+            resetn  : in    std_logic;                          -- reset
+            -- data
+            d_in    : in    std_logic_vector(W-1 downto 0);     -- data input
+            d_out   : out   std_logic_vector(W-1 downto 0)      -- data output
+        );
+    end component;
 begin
 
     -- creating one register under test
-    REG_DUT: entity work.param_reg_vhd 
-    generic map (
-        W=> W 
-        ) 
-        port map    (
-            clk => clk, 
-            resetn => resetn, 
-            d_in => d_in, 
-            d_out => d_out
-            );
+    DUT: entity work.param_reg_vhd 
+    generic map 
+    (
+        W       => W 
+    ) 
+    port map    
+    (
+        clk     => clk, 
+        resetn  => resetn, 
+        d_in    => d_in, 
+        d_out   => d_out
+    );
             
     -- generating clock
     clk_gen : process

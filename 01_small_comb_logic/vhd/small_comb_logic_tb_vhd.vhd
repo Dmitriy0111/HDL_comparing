@@ -21,25 +21,34 @@ architecture testbench of small_comb_logic_tb_vhd is
     constant timescale  : time      := 1 ns;
     constant repeat_n   : integer   := 10;
     -- data signals
-    signal   d_in       : std_logic_vector( 7 downto 0);    -- data input
-    signal   d_out      : std_logic_vector( 7 downto 0);    -- data output
+    signal   d_in       : std_logic_vector(7 downto 0);     -- data input
+    signal   d_out      : std_logic_vector(7 downto 0);     -- data output
     -- 
-    signal   d_f        : std_logic_vector( 0 downto 0 );
-    signal   d_inv      : std_logic_vector( 0 downto 0 );
-    signal   d_xor      : std_logic_vector( 1 downto 0 );
-    signal   d_sum      : std_logic_vector( 1 downto 0 );
-    signal   d_and      : std_logic_vector( 0 downto 0 );
-    signal   d_or       : std_logic_vector( 0 downto 0 );
+    signal   d_f        : std_logic_vector(0 downto 0); 
+    signal   d_inv      : std_logic_vector(0 downto 0); 
+    signal   d_xor      : std_logic_vector(1 downto 0); 
+    signal   d_sum      : std_logic_vector(1 downto 0); 
+    signal   d_and      : std_logic_vector(0 downto 0); 
+    signal   d_or       : std_logic_vector(0 downto 0); 
     -- simulation variables
     signal   rep_c      : integer   := 0;
+
+    component small_comb_logic_vhd
+        port 
+        (
+            d_in    : in    std_logic_vector(7 downto 0);   -- data input
+            d_out   : out   std_logic_vector(7 downto 0)    -- data output
+        );
+    end component;
 begin
 
     -- creating one design under test
-    small_comb_logic_0: entity work.small_comb_logic_vhd  
-    port map(
-                d_in => d_in, 
-                d_out => d_out
-            );
+    small_comb_logic_0: small_comb_logic_vhd
+    port map
+    (
+        d_in    => d_in, 
+        d_out   => d_out
+    );
 
     d_f   <= d_out(0 downto 0);
     d_inv <= d_out(1 downto 1);

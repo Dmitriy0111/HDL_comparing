@@ -14,7 +14,7 @@ use ieee.numeric_std.all;
 entity param_reg_vhd is
     generic
     (
-        W : integer := 8
+        W       : integer := 8
     );
     port 
     (
@@ -22,8 +22,8 @@ entity param_reg_vhd is
         clk     : in    std_logic;                          -- clock
         resetn  : in    std_logic;                          -- reset
         -- data
-        d_in    : in    std_logic_vector( W-1 downto 0);    -- data input
-        d_out   : out   std_logic_vector( W-1 downto 0)     -- data output
+        d_in    : in    std_logic_vector(W-1 downto 0);     -- data input
+        d_out   : out   std_logic_vector(W-1 downto 0)      -- data output
     );
 end param_reg_vhd;
 

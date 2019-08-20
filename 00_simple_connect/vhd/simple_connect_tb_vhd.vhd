@@ -21,18 +21,27 @@ architecture testbench of simple_connect_tb_vhd is
     constant timescale  : time      := 1 ns;
     constant repeat_n   : integer   := 10;
     -- data signals
-    signal   d_in       : std_logic_vector( 7 downto 0);    -- data input
-    signal   d_out      : std_logic_vector( 7 downto 0);    -- data output
+    signal   d_in       : std_logic_vector(7 downto 0);     -- data input
+    signal   d_out      : std_logic_vector(7 downto 0);     -- data output
     -- simulation variables
     signal   rep_c      : integer   := 0;
+
+    component simple_connect_vhd
+        port 
+        (
+            d_in    : in    std_logic_vector(7 downto 0);   -- data input
+            d_out   : out   std_logic_vector(7 downto 0)    -- data output
+        );
+    end component;
 begin
 
     -- creating one design under test
-    simple_connect_0: entity work.simple_connect_vhd  
-    port map(
-                d_in => d_in, 
-                d_out => d_out
-            );
+    simple_connect_0: simple_connect_vhd
+    port map
+    (
+        d_in    => d_in, 
+        d_out   => d_out
+    );
             
     -- simulation process
     simulaton : process
