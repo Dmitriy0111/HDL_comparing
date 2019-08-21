@@ -20,8 +20,8 @@ entity pipe_reg_vhd is
     (
         clk     : in    std_logic;
         resetn  : in    std_logic;
-        clr     : in    std_logic;
-        we      : in    std_logic;
+        clr     : in    std_logic_vector(0   downto 0);
+        we      : in    std_logic_vector(0   downto 0);
         d_in    : in    std_logic_vector(W-1 downto 0);
         d_out   : out   std_logic_vector(W-1 downto 0)
     );
@@ -35,8 +35,8 @@ begin
         if( not resetn ) then
             d_out <= (others => '0');
         elsif( rising_edge(clk)) then
-            if( we ) then
-                if( clr ) then
+            if( we(0) ) then
+                if( clr(0) ) then
                     d_out <= (others => '0');
                 else
                     d_out <= d_in;

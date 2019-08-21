@@ -13,6 +13,7 @@ use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 use std.textio.all;
+use std.env.stop;
 
 entity param_reg_tb_vhd is
 end param_reg_tb_vhd;
@@ -70,9 +71,6 @@ begin
         wait for (10 / 2 * timescale);
         clk <= '1';
         wait for (10 / 2 * timescale);
-        if( rep_c = repeat_n) then
-            wait;
-        end if;
     end process clk_gen;
     -- reset generation
     rst_gen : process
@@ -106,7 +104,7 @@ begin
             write(term_line ,"d_in = 0x" & to_hstring(d_in) & ", d_out = 0x" & to_hstring(d_out) & " " & time'image(now));
             writeline(output, term_line);
             if( rep_c = repeat_n) then
-                wait;
+                stop;
             end if;
         end if;
     end process simulaton; 

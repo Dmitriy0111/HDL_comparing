@@ -13,6 +13,7 @@ use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 use std.textio.all;
+use std.env.stop;
 
 entity simple_connect_tb_vhd is
 end simple_connect_tb_vhd;
@@ -59,7 +60,7 @@ begin
             write(term_line ,"d_in = 0x" & to_hstring(d_in) & ", d_out = 0x" & to_hstring(d_out) & " " & time'image(now));
             writeline(output, term_line);
             if( rep_c = repeat_n) then
-                wait;
+                stop;
             end if;
     end process simulaton; 
     

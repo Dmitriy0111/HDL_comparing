@@ -13,6 +13,7 @@ use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 use std.textio.all;
+use std.env.stop;
 
 entity simple_reg_tb_vhd is
 end simple_reg_tb_vhd;
@@ -67,9 +68,6 @@ begin
         wait for (10 / 2 * timescale);
         clk <= '1';
         wait for (10 / 2 * timescale);
-        if( rep_c = repeat_n) then
-            wait;
-        end if;
     end process clk_gen;
     -- reset generation
     rst_gen : process
@@ -89,6 +87,7 @@ begin
         variable seed1  : positive;
         variable seed2  : positive;
         variable rand   : real;
+        variable rand_int : integer;
         variable term_line : line;
     -- process start
     begin
@@ -100,14 +99,20 @@ begin
             rep_c <= rep_c + 1;
             uniform( seed1 , seed2 , rand );
             d_in_0 <= std_logic_vector(to_unsigned(integer(round(rand * ( (2.0 ** 8) - 1.0 ) ) ),8) );
-            d_in_1 <= std_logic_vector(to_unsigned(integer(round(rand * ( (2.0 ** 32) - 1.0 ) ) ),32) );
+            uniform( seed1 , seed2 , rand );
+            if( ( rand * ( ( 2.0 ** 32 ) - 1.0 ) ) > 2.0 ** 31 ) then 
+                rand_int := integer(   ( rand * ( ( 2.0 ** 31 ) - 1.0 ) ) );
+            else
+                rand_int := integer( - ( rand * ( ( 2.0 ** 31 ) - 1.0 ) ) );
+            end if;
+            d_in_1 <= std_logic_vector(to_signed(rand_int,32) );
             wait until rising_edge(clk);
             write(term_line ,"d_in_0 = 0x" & to_hstring(d_in_0) & ", d_out_0 = 0x" & to_hstring(d_out_0) & " " & time'image(now));
             writeline(output, term_line);
             write(term_line ,"d_in_1 = 0x" & to_hstring(d_in_1) & ", d_out_1 = 0x" & to_hstring(d_out_1) & " " & time'image(now));
             writeline(output, term_line);
             if( rep_c = repeat_n) then
-                wait;
+                stop;
             end if;
         end if;
     end process simulaton; 

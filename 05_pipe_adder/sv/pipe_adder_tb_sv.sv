@@ -12,8 +12,7 @@ module pipe_adder_tb_sv();
     timeprecision   1ns;
     timeunit        1ns;
 
-    localparam          W = 8,          // bus width
-                        T = 10,         // Clock period in ns
+    localparam          T = 10,         // Clock period in ns
                         rst_delay = 7,  // reset delay
                         repeat_n = 10;  // number of repeats 
 

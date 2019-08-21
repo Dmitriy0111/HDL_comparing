@@ -13,6 +13,7 @@ use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 use std.textio.all;
+use std.env.stop;
 
 entity simple_adder_tb_vhd is
 end simple_adder_tb_vhd;
@@ -73,7 +74,7 @@ begin
         write(term_line ,"x_0 = 0x" & to_hstring(x_0) & " " & "x_1 = 0x" & to_hstring(x_1) & ", result = 0x" & to_hstring(result) & " " & time'image(now));
         writeline(output, term_line);
         if( rep_c = repeat_n) then
-            wait;
+            stop;
         end if;
     end process simulaton; 
     
