@@ -105,40 +105,41 @@ begin
         -- task for sending symbol over uart to receive module
         procedure uart_write( gen : boolean ) is
             begin
-                tx_req <= ( others => '1');
+                tx_req <= (others => '1');
                 uniform( seed1 , seed2 , rand );
                 stop_sel <= std_logic_vector(to_unsigned(integer(round(rand * ( (2.0 ** 2) - 1.0 ) ) ),2) );
+                write(term_line ,"stop_sel = 0x" & to_hstring(stop_sel) & " ");
                 uniform( seed1 , seed2 , rand );
                 tx_data <= std_logic_vector(to_unsigned(integer(round(rand * ( (2.0 ** 8) - 1.0 ) ) ),8) );
+                write(term_line ,"tx_data = 0x" & to_hstring(tx_data) & " ");
                 uniform( seed1 , seed2 , rand );
                 case( integer(round(rand * 5.0 ) ) ) is
-                    when 1      => comp <= std_logic_vector( to_unsigned( 50_000_000 / 9600   , 16 ) );
-                    when 2      => comp <= std_logic_vector( to_unsigned( 50_000_000 / 19200  , 16 ) );
-                    when 3      => comp <= std_logic_vector( to_unsigned( 50_000_000 / 38400  , 16 ) );
-                    when 4      => comp <= std_logic_vector( to_unsigned( 50_000_000 / 57600  , 16 ) );
-                    when 5      => comp <= std_logic_vector( to_unsigned( 50_000_000 / 115200 , 16 ) );
-                    when others => comp <= std_logic_vector( to_unsigned( 50_000_000 / 9600   , 16 ) );
+                    when 1      => comp <= std_logic_vector( to_unsigned( 50_000_000 / 9600   , 16 ) ); write(term_line ,"comp = 0x" & to_hstring(comp) & " baudrate = 9600"   & " " & time'image(now));
+                    when 2      => comp <= std_logic_vector( to_unsigned( 50_000_000 / 19200  , 16 ) ); write(term_line ,"comp = 0x" & to_hstring(comp) & " baudrate = 19200"  & " " & time'image(now));
+                    when 3      => comp <= std_logic_vector( to_unsigned( 50_000_000 / 38400  , 16 ) ); write(term_line ,"comp = 0x" & to_hstring(comp) & " baudrate = 38400"  & " " & time'image(now));
+                    when 4      => comp <= std_logic_vector( to_unsigned( 50_000_000 / 57600  , 16 ) ); write(term_line ,"comp = 0x" & to_hstring(comp) & " baudrate = 57600"  & " " & time'image(now));
+                    when 5      => comp <= std_logic_vector( to_unsigned( 50_000_000 / 115200 , 16 ) ); write(term_line ,"comp = 0x" & to_hstring(comp) & " baudrate = 115200" & " " & time'image(now));
+                    when others => comp <= std_logic_vector( to_unsigned( 50_000_000 / 9600   , 16 ) ); write(term_line ,"comp = 0x" & to_hstring(comp) & " baudrate = 9600"   & " " & time'image(now));
                 end case;
-                tr_en <= ( others => '1');
+                writeline(output, term_line);
+                tr_en <= (others => '1');
                 wait until rising_edge(tx_req_ack(0));
-                tx_req <= ( others => '0');
+                tx_req <= (others => '0');
                 wait until rising_edge(clk);
-        end; -- send_uart_symbol
+        end; -- uart_write
     -- process start
     begin
         if( rst_c /= rst_delay ) then
-            tx_req <= ( others => '0');
-            stop_sel <= ( others => '0');
-            tx_data <= ( others => '0');
-            comp <= ( others => '0');
-            tr_en <= ( others => '0');
+            tx_req <= (others => '0');
+            stop_sel <= (others => '0');
+            tx_data <= (others => '0');
+            comp <= (others => '0');
+            tr_en <= (others => '0');
             wait until rising_edge(clk);
         elsif( rst_c = rst_delay ) then
             if( rep_c < repeat_n ) then
                 rep_c <= rep_c + 1; 
                 uart_write(true);            
-                --write(term_line ,"x_0 = 0x" & to_hstring(x_0) & " x_1 = 0x" & to_hstring(x_1) & " " & time'image(now));
-                --writeline(output, term_line);
             elsif( rep_c = repeat_n ) then
                 stop;
             end if;

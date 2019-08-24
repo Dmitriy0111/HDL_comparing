@@ -22,11 +22,11 @@ module uart_transmitter_sv
     output  reg     [0  : 0]    uart_tx
 );
 
-    localparam          IDLE_s    = 3'b000, 
-                        START_s   = 3'b010, 
-                        TRANMIT_s = 3'b011, 
-                        STOP_s    = 3'b100, 
-                        WAIT_s    = 3'b101;
+    localparam          IDLE_s     = 3'b000, 
+                        START_s    = 3'b010, 
+                        TRANSMIT_s = 3'b011, 
+                        STOP_s     = 3'b100, 
+                        WAIT_s     = 3'b101;
 
     reg     [7  : 0]    tx_data_int;
     reg     [1  : 0]    stop_sel_int;
@@ -59,11 +59,11 @@ module uart_transmitter_sv
     begin
         next_state = state;
         case( state )
-            IDLE_s      : next_state = idle2start ? START_s   : state;
-            START_s     : next_state = start2tr   ? TRANMIT_s : state;
-            TRANMIT_s   : next_state = tr2stop    ? STOP_s    : state;
-            STOP_s      : next_state = stop2wait  ? WAIT_s    : state;
-            WAIT_s      : next_state = wait2idle  ? IDLE_s    : state;
+            IDLE_s      : next_state = idle2start ? START_s    : state;
+            START_s     : next_state = start2tr   ? TRANSMIT_s : state;
+            TRANSMIT_s  : next_state = tr2stop    ? STOP_s     : state;
+            STOP_s      : next_state = stop2wait  ? WAIT_s     : state;
+            WAIT_s      : next_state = wait2idle  ? IDLE_s     : state;
             default     : next_state = IDLE_s;
         endcase
     end
@@ -102,7 +102,7 @@ module uart_transmitter_sv
                                 comp_c <= 16'b0;
                             end
                         end
-                    TRANMIT_s   :
+                    TRANSMIT_s  :
                         begin
                             uart_tx <= tx_data_int[0];
                             comp_c <= comp_c + 1'b1;

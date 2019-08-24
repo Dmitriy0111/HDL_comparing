@@ -35,7 +35,7 @@ module uart_transmitter_sv
     logic   [0  : 0]    wait2idle;
 
     enum
-    logic   [2  : 0]    { IDLE_s, START_s, TRANMIT_s, STOP_s, WAIT_s } state, next_state;
+    logic   [2  : 0]    { IDLE_s, START_s, TRANSMIT_s, STOP_s, WAIT_s } state, next_state;
 
     assign idle2start   = tx_req == '1;
     assign start2tr     = comp_c >= comp_int;
@@ -53,11 +53,11 @@ module uart_transmitter_sv
     begin
         next_state = state;
         case( state )
-            IDLE_s      : next_state = idle2start ? START_s   : state;
-            START_s     : next_state = start2tr   ? TRANMIT_s : state;
-            TRANMIT_s   : next_state = tr2stop    ? STOP_s    : state;
-            STOP_s      : next_state = stop2wait  ? WAIT_s    : state;
-            WAIT_s      : next_state = wait2idle  ? IDLE_s    : state;
+            IDLE_s      : next_state = idle2start ? START_s    : state;
+            START_s     : next_state = start2tr   ? TRANSMIT_s : state;
+            TRANSMIT_s  : next_state = tr2stop    ? STOP_s     : state;
+            STOP_s      : next_state = stop2wait  ? WAIT_s     : state;
+            WAIT_s      : next_state = wait2idle  ? IDLE_s     : state;
             default     : next_state = IDLE_s;
         endcase
     end
@@ -96,7 +96,7 @@ module uart_transmitter_sv
                                 comp_c <= '0;
                             end
                         end
-                    TRANMIT_s   :
+                    TRANSMIT_s  :
                         begin
                             uart_tx <= tx_data_int[0];
                             comp_c <= comp_c + 1'b1;

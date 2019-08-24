@@ -20,5 +20,6 @@ Or download project from GitHub site <a href="https://github.com/Dmitriy0111/HDL
 | 04_simple_adder       | (SV,V,VHDL)   | - Consist simple adder with parameter input/output data bus width                                 |
 | 05_pipe_adder         | (SV,V,VHDL)   | - Consist pipeline adder with four stages                                                         |
 | 06_uart_transmitter   | (SV,V,VHDL)   | - Consist uart transmitter module                                                                 |
+| 07_spi_master         | (SV,V,VHDL)   | - Consist spi master module                                                                       |
 
 SV - SystemVerilog, V - Verilog
