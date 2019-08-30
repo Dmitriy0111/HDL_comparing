@@ -41,7 +41,8 @@ show_pwd:
 
 clean: \
 	sim_clean \
-	board_clean
+	board_clean \
+	log_clean
 
 sim_all: \
 	sim_cmd 
@@ -141,3 +142,6 @@ board_all: $(BOARDS_SUPPORTED)
 
 board_clean:
 	rm -rfd $(PWD)/synth_*
+
+log_clean:
+	rm -rfd .log

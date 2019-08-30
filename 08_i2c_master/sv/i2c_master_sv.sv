@@ -3,7 +3,7 @@
 *  Autor           :   Vlasov D.V.
 *  Data            :   2019.08.26
 *  Language        :   SystemVerilog
-*  Description     :   This i2c master module
+*  Description     :   This is i2c master module
 *  Copyright(c)    :   2019 Vlasov D.V.
 */
 
@@ -21,6 +21,8 @@ module i2c_master_sv
     input   logic   [7 : 0]     tx_data,
     output  logic   [7 : 0]     rx_data,
     input   logic   [0 : 0]     tr_en,
+    input   logic   [0 : 0]     ack_nack,
+    output  logic   [0 : 0]     ack_nack_f,
     input   logic   [0 : 0]     tx_rx_req,
     output  logic   [0 : 0]     tx_rx_req_ack,
     output  logic   [0 : 0]     scl,
@@ -33,7 +35,7 @@ module i2c_master_sv
     logic   [0 : 0]     scl_int;
     logic   [0 : 0]     sda_int;
     logic   [3 : 0]     bit_c;
-    logic   [0 : 0]     ack_nack;
+    logic   [0 : 0]     ack_nack_int;
     logic   [0 : 0]     sda_hiz;
 
     logic   [2 : 0]     pos_c;
@@ -48,7 +50,7 @@ module i2c_master_sv
     logic   [0 : 0]     wait2idle;
 
     enum
-    logic   [2 : 0]     { IDLE_s, START_s, START_R_s, READ_s, WRITE_s, DATA_s, STOP_s, WAIT_s } state, next_state;
+    logic   [2 : 0]     { IDLE_s, START_s, READ_s, WRITE_s, DATA_s, STOP_s, WAIT_s } state, next_state;
 
     assign idle2start   = (tx_rx_req == '1) && (start_gen == '1);
     assign idle2stop    = (tx_rx_req == '1) && (stop_gen == '1);
@@ -63,6 +65,7 @@ module i2c_master_sv
     assign sda = sda_hiz ? 'z : sda_int;
 
     assign rx_data = data_int;
+    assign ack_nack_f = ack_nack_int;
 
     always_ff @(posedge clk, negedge resetn)
         if( !resetn )
@@ -78,7 +81,6 @@ module i2c_master_sv
                                        idle2data    ? DATA_s    : 
                                        idle2stop    ? STOP_s    : state;
             START_s     : next_state = start2wait   ? WAIT_s    : state;
-            START_R_s   : next_state = start_r2wait ? WAIT_s    : state;
             DATA_s      : next_state = data2wait    ? WAIT_s    : state;
             STOP_s      : next_state = stop2wait    ? WAIT_s    : state;
             WAIT_s      : next_state = wait2idle    ? IDLE_s    : state;
@@ -90,7 +92,7 @@ module i2c_master_sv
     begin
         if( !resetn )
         begin
-            sda_hiz <= '0;
+            sda_hiz <= '1;
             sda_int <= '1;
             scl_int <= '1;
             comp_int <= '0;
@@ -100,7 +102,7 @@ module i2c_master_sv
             comp_c <= '0;
             pos_c <= '0;
             bit_c <= '0;
-            ack_nack <= '0;
+            ack_nack_int <= '0;
         end
         else
         begin
@@ -112,12 +114,14 @@ module i2c_master_sv
                             begin
                                 data_int <= tx_data;
                                 comp_int <= comp;
-                                ack_nack <= '0;
+                                ack_nack_int <= ack_nack;
                                 if( tr_gen )
                                     sda_hiz <= '0;
                                 if( rec_gen )
                                     sda_hiz <= '1;
                             end
+                            if( idle2start )
+                                sda_hiz <= '0;
                         end
                     START_s     : 
                         begin
@@ -131,29 +135,20 @@ module i2c_master_sv
                             if( start2wait )
                                 comp_c <= '0;
                         end
-                    START_R_s   : 
-                        begin
-                            sda_int <= '1;
-                            scl_int <= '0;
-                            if( comp_c >= 30 )
-                                scl_int <= '0;
-                            if( comp_c >= 60 )
-                                sda_int <= '0;
-                            if( start_r2wait )
-                                comp_c <= '0;
-                        end
                     DATA_s      : 
                         begin
                             if( ( bit_c == 7 ) && ( comp_c >= 100 ) )
                                 sda_hiz <= ~ sda_hiz;
                             comp_c <= comp_c + 1'b1;
-                            sda_int <= data_int[7];
+                            if( comp_c == '0 )
+                                sda_int <= data_int[7];
                             scl_int <= '0;
                             if( ( comp_c >= 20 ) && ( comp_c <= 80 ) )
                                 scl_int <= '1;
+                            if( comp_c == 100 >> 1)
+                                { data_int , ack_nack_int } <= { data_int[6:0] , ack_nack_int , sda };
                             if( comp_c >= 100 )
                             begin
-                                { data_int , ack_nack } <= { data_int[6:0] , ack_nack , sda };
                                 comp_c <= '0;
                                 bit_c <= bit_c + 1'b1;
                             end
@@ -171,7 +166,10 @@ module i2c_master_sv
                             if( comp_c >= 60 )
                                 sda_int <= '1;
                             if( stop2wait )
+                            begin
                                 comp_c <= '0;
+                                sda_hiz <= '1;
+                            end
                         end
                     WAIT_s      : 
                         begin
@@ -183,7 +181,7 @@ module i2c_master_sv
                 endcase
             else
             begin
-                sda_hiz <= '0;
+                sda_hiz <= '1;
                 sda_int <= '1;
                 scl_int <= '1;
                 comp_int <= '0;
@@ -193,7 +191,7 @@ module i2c_master_sv
                 comp_c <= '0;
                 pos_c <= '0;
                 bit_c <= '0;
-                ack_nack <= '0;
+                ack_nack_int <= '0;
             end
         end
     end

@@ -3,7 +3,7 @@
 *  Autor           :   Vlasov D.V.
 *  Data            :   2019.08.26
 *  Language        :   SystemVerilog
-*  Description     :   This i2c master testbench
+*  Description     :   This is i2c master testbench
 *  Copyright(c)    :   2019 Vlasov D.V.
 */
 
@@ -27,6 +27,8 @@ module i2c_master_tb_sv();
     logic   [7 : 0]     tx_data;
     logic   [7 : 0]     rx_data;
     logic   [0 : 0]     tr_en;
+    logic   [0 : 0]     ack_nack;
+    logic   [0 : 0]     ack_nack_f;
     logic   [0 : 0]     tx_rx_req;
     logic   [0 : 0]     tx_rx_req_ack;
 
@@ -59,11 +61,16 @@ module i2c_master_tb_sv();
         .tx_data        ( tx_data           ),
         .rx_data        ( rx_data           ),
         .tr_en          ( tr_en             ),
+        .ack_nack       ( ack_nack          ),
+        .ack_nack_f     ( ack_nack_f        ),
         .tx_rx_req      ( tx_rx_req         ),
         .tx_rx_req_ack  ( tx_rx_req_ack     ),
         .scl            ( i2c_if_0.scl      ),
         .sda            ( i2c_if_0.sda      )
     );
+
+    pullup 
+    sda_pull            ( i2c_if_0.sda      );
 
     initial
     begin
@@ -79,6 +86,7 @@ module i2c_master_tb_sv();
     end
     initial
     begin
+        ack_nack = '0;
         tx_rx_req = '0;
         tx_data = '0;
         start_gen = '0;
@@ -90,7 +98,7 @@ module i2c_master_tb_sv();
         @(posedge resetn);
         repeat(repeat_n)
         begin
-            #100;
+            #10000;
             i2c_write_test();
         end
         $stop;
@@ -157,8 +165,10 @@ module i2c_master_tb_sv();
     task i2c_write_test();
         i2c_start();
         i2c_write_data( 48 );
-        i2c_write_data( $urandom_range(0,255) );
-        i2c_write_data( $urandom_range(0,255) );
+        if( ~ack_nack_f )
+            i2c_write_data( $urandom_range(0,255) );
+        if( ~ack_nack_f )
+            i2c_write_data( $urandom_range(0,255) );
         i2c_stop();
     endtask : i2c_write_test
     

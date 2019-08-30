@@ -3,7 +3,7 @@
 *  Autor           :   Vlasov D.V.
 *  Data            :   2019.08.27
 *  Language        :   SystemVerilog
-*  Description     :   This i2c interface
+*  Description     :   This is i2c interface
 *  Copyright(c)    :   2019 Vlasov D.V.
 */
 
